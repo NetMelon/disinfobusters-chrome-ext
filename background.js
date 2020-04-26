@@ -6,7 +6,7 @@ const list = [];
 // Linking Disinfo Busters website with icon in main Google Chrome toolbar
 chrome.browserAction.onClicked.addListener(function(tab) {
   chrome.tabs.create({
-    url: 'https://disinfobusters.weebly.com/stop.html'
+    url: 'https://disinfobusters.weebly.com/'
   })
 })
 
