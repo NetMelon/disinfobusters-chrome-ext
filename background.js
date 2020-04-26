@@ -4,10 +4,10 @@ const csvSource = "https://raw.githubusercontent.com/qcri/COVID19-MAL-Blacklist/
 const list = [];
 let lock = null
 
-// Linking Disinfo Busters website with icon in main Google Chrome toolbar
+// Linking Disinfobusters website with icon in Google Chrome toolbar
 chrome.browserAction.onClicked.addListener(function(tab) {
   chrome.tabs.create({
-    url: 'https://disinfobusters.weebly.com/'
+    url: 'https://disinfobusters.eu/'
   })
 })
 
@@ -85,51 +85,3 @@ chrome.webRequest.onBeforeRequest.addListener(async function(details) {
   // extraInfoSpec
   ["blocking"]
 );
-
-
-// chrome.runtime.onMessage.addListener(
-//   function(message, callback) {
-//     if (message == "runContentScript") {
-//       chrome.tabs.executeScript({
-//         file: 'content.js'
-//       });
-//     }
-//   });
-//
-
-// chrome.runtime.onInstalled.addListener(function() {
-//     // todo: get csv file https://github.com/qcri/COVID19-MAL-Blacklist/blob/master/blacklist/covid19mal_latest.csv
-
-//     var xhr = new XMLHttpRequest();
-//     xhr.open("GET", "https://github.com/qcri/COVID19-MAL-Blacklist/blob/master/blacklist/covid19mal_latest.csv", true);
-//     xhr.onreadystatechange = function() {
-//       if (xhr.readyState == 4) {
-//         // JSON.parse does not evaluate the attacker's scripts.
-//         var resp = JSON.parse(xhr.responseText);
-//       }
-//     }
-//     xhr.send();
-
-//     chrome.storage.sync.set({color: '#3aa757'}, function() {
-//       console.log("The color is green.");
-//     });
-
-
-// // change url
-//     chrome.tabs.query({'active': true}, function(tabs) {
-//       chrome.tabs.update(tabs[0].id, {url: 'https://www.disinfobusters.eu/stop'});
-//     });
-
-
-
-
-//     chrome.declarativeContent.onPageChanged.removeRules(undefined, function() {
-//         chrome.declarativeContent.onPageChanged.addRules([{
-//           conditions: [new chrome.declarativeContent.PageStateMatcher({
-//             pageUrl: {hostEquals: 'developer.chrome.com'},
-//           })
-//           ],
-//               actions: [new chrome.declarativeContent.ShowPageAction()]
-//         }]);
-//       });
-//   });

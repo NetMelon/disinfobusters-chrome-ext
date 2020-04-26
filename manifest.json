@@ -1,10 +1,18 @@
 {
-  "name": "Disinfo-Busters",
+  "name": "Disinfobusters",
   "version": "1.0",
   "manifest_version": 2,
-  "description": "Disinfo-Buster: Protecting you against disinformation!",
+  "description": "Disinfobuster: Protecting you against disinformation!",
+  "icons": {
+    "16": "images/icon16.png",
+    "24": "images/icon24.png",
+    "32": "images/icon32.png",
+    "48": "images/icon48.png",
+    "128": "images/icon128.png"
+  },
+  "homepage_url": "https://disinfobusters.eu/",
   "browser_action": {
-    "default_title": "Disinfo-Busters",
+    "default_title": "Disinfobusters",
     "default_icon": {
       "16": "images/icon16.png",
       "24": "images/icon24.png",
@@ -23,7 +31,6 @@
     "webRequestBlocking",
     "tabs",
     "activeTab",
-    "storage",
     "<all_urls>"
   ]
 }
