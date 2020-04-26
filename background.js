@@ -48,18 +48,19 @@ chrome.webRequest.onBeforeRequest.addListener(async function(details) {
     return
   }
 
-  // console.log("details", details)
+  console.log("details", details)
 
   const url = new URL(details.url)
   if (list.filter(el => el.domain === url.host).length > 0) {
     console.log("Found %s!", url.host);
-    chrome.tabs.executeScript(
-      details.tabId,
-      {
-        file: 'content.js',
-        runAt: 'document_end'
-      }
-    );
+    // chrome.tabs.executeScript(
+    //   details.tabId,
+    //   {
+    //     file: 'content.js',
+    //     runAt: 'document_end'
+    //   }
+    // );
+    chrome.tabs.update(details.tabId, {url: `https://www.disinfobusters.eu/stop?ref=\\"${url.host}\\"`});
   }
 
 },
