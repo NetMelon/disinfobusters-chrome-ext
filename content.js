@@ -13,8 +13,8 @@
     <b>Fake News Alert!</b> This site is suspected to be a fake news spreader!\
   </p>\
   <p>\
-    Read more at <a href=\"https://www.disinfobusters.eu/stop?ref="+ reflink + "\">DisinfoBusters</a> \
-  </p>"
+    Read more at <a href=\"http://www.disinfobusters.eu/stop?ref="+ reflink + "\">DisinfoBusters</a> \
+  </p><img src='https://disinfobusters.weebly.com/uploads/1/9/6/4/19641989/disnfobusters-logo-large_orig.png'>"
 
   document.body.appendChild(div);
 }());
