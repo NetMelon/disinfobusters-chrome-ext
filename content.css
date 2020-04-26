@@ -1,7 +1,46 @@
-.selection_bubble {
-  visibility: hidden;
+#disinfobusters-ext {
+  width: 100vw;
+  min-height: 100vw;
+  z-index: 999;
   position: absolute;
-  top: 0;
-  left: 0;
-  background:-webkit-gradient(linear, left top, left bottom, from(#2e88c4), to(#075698));
+  top: 0px;
+  background-color: rgba(255, 0, 0, 0.6);
+  color: white !important;
+  text-align: center;
+}
+
+#disinfobusters-ext .disinfobusters-ext-wrapper {
+  width: 80vw;
+  height: 40vh;
+  padding: 40vh 0 0 0;
+}
+
+#disinfobusters-ext .disinfobusters-ext-img {
+  width: 40%;
+  float: left;
+}
+
+#disinfobusters-ext .disinfobusters-ext-img img {
+  height: 200px;
+}
+
+#disinfobusters-ext .disinfobusters-ext-message {
+  height: 100%;
+  width: 58%;
+  float: left;
+}
+
+#disinfobusters-ext .disinfobusters-ext-dismiss,
+#disinfobusters-ext .disinfobusters-ext-message p,
+#disinfobusters-ext .disinfobusters-ext-message b,
+#disinfobusters-ext .disinfobusters-ext-message a,
+#disinfobusters-ext .disinfobusters-ext-message div {
+  font-size: 18pt !important;
+  font-family: sans-serif !important;
+  font-weight: normal !important;
+  color: white;
+}
+
+#disinfobusters-ext .disinfobusters-ext-dismiss {
+  cursor: pointer;
 }

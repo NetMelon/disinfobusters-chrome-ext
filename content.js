@@ -1,20 +1,30 @@
-
 (function() {
   'use strict';
 
-  // Add bubble to the top of the page.
-  var div = document.createElement('div');
+  const id = "disinfobusters-ext"
 
-  div.style = "width: 100%; min-height: 4em; border: 2pt solid red; z-index: 999; position: absolute; top: 0px; margin: 0 auto; background-color: red; color: white; text-align: center; font-size: 36pt; text-decoration:none";
-  div.setAttribute('class', 'selection_bubble');
+  const exists = () => document.getElementById(id) !== null
 
-  const reflink = document.location.toString()
-  div.innerHTML = "<p>\
-    <b>Fake News Alert!</b><br/> This site is suspected to be a fake news spreader!\
-  </p>\
-  <p>\
-    Read more at <a href=\"http://www.disinfobusters.eu/stop?ref="+ reflink + "\">DisinfoBusters</a> \
-  </p><img src='https://disinfobusters.weebly.com/uploads/1/9/6/4/19641989/disnfobusters-logo-large_orig.png'>"
+  if (exists()) return
 
-  document.body.appendChild(div);
+  fetch(chrome.extension.getURL('/content.html'))
+    .then(response => response.text())
+    .then(html => {
+
+      // other code
+      // eg update injected elements,
+      // add event listeners or logic to connect to other parts of the app
+
+      var div = document.createElement('div');
+      div.id = id
+      const reflink = document.location.toString()
+      div.innerHTML = html.replace("{referer}", encodeURIComponent(reflink))
+
+      if (!exists()) {
+        document.body.appendChild(div);
+      }
+
+    }).catch(err => {
+      console.error("Failed to load /content.html")
+    });
 }());

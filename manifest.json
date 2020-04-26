@@ -15,13 +15,9 @@
     "scripts": ["background.js"],
     "persistent": true
   },
-  "content_scripts": [{
-    "matches": ["http://*/*"],
-    "css": ["content.css"],
-    "js": ["content.js"],
-    "run_at": "document_end",
-    "all_frames": true
-  }],
+  "web_accessible_resources": [
+    "content.html"
+  ],
   "permissions": [
     "webRequest",
     "webRequestBlocking",

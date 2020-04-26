@@ -2,6 +2,7 @@
 
 const csvSource = "https://raw.githubusercontent.com/qcri/COVID19-MAL-Blacklist/master/disinfo/disinfo_latest.csv"
 const list = [];
+let lock = null
 
 // Linking Disinfo Busters website with icon in main Google Chrome toolbar
 chrome.browserAction.onClicked.addListener(function(tab) {
@@ -10,8 +11,20 @@ chrome.browserAction.onClicked.addListener(function(tab) {
   })
 })
 
-const fetchList = () => {
-  return fetch(csvSource)
+const showBanner = (details) => {
+  chrome.tabs.insertCSS(details.tabId, { file: 'content.css' }, () => {
+    chrome.tabs.executeScript(details.tabId, { file: 'content.js' });
+  });
+}
+
+const fetchList = async () => {
+
+  // await other requests
+  if (lock !== null) {
+    return await lock
+  }
+
+  lock = fetch(csvSource)
     .then(function(response) {
       if (response.status !== 200) {
         console.log('Looks like there was a problem. Status Code: %s', response.status);
@@ -34,15 +47,21 @@ const fetchList = () => {
     .catch(function(err) {
       console.log('Fetch Error :-S', err);
     });
+
+  return lock
+}
+
+const loadCache = async () => {
+  if (list.length === 0 && lock === null) {
+    const data = await fetchList()
+    list.push(...data)
+    console.log("Loaded %s domains", data.length)
+  }
 }
 
 chrome.webRequest.onBeforeRequest.addListener(async function(details) {
 
-  if (list.length === 0) {
-    const data = await fetchList()
-    list.push(...data)
-    console.log("Loaded data ", data)
-  }
+  await loadCache()
 
   if (details.url === csvSource) {
     return
@@ -53,13 +72,7 @@ chrome.webRequest.onBeforeRequest.addListener(async function(details) {
   const url = new URL(details.url)
   if (list.filter(el => el.domain === url.host).length > 0) {
     console.log("Found %s!", url.host);
-    chrome.tabs.executeScript(
-      details.tabId,
-      {
-        file: 'content.js',
-        runAt: 'document_end'
-      }
-    );
+    showBanner(details)
   }
 
 },
