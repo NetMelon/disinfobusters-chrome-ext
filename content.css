@@ -4,15 +4,17 @@
   z-index: 999;
   position: absolute;
   top: 0px;
-  background-color: rgba(255, 0, 0, 0.6);
+  background-color: rgba(255, 0, 0, 0.8);
   color: white !important;
   text-align: center;
 }
 
 #disinfobusters-ext .disinfobusters-ext-wrapper {
-  width: 80vw;
+  background: #FFF;
+  margin: 0 auto;
+  width: 60vw;
   height: 40vh;
-  padding: 40vh 0 0 0;
+  margin: 40vh auto 0 auto;
 }
 
 #disinfobusters-ext .disinfobusters-ext-img {
@@ -21,11 +23,11 @@
 }
 
 #disinfobusters-ext .disinfobusters-ext-img img {
-  height: 200px;
+  height: 40vh;
 }
 
 #disinfobusters-ext .disinfobusters-ext-message {
-  height: 100%;
+  height: 40vh;
   width: 58%;
   float: left;
 }
@@ -38,9 +40,16 @@
   font-size: 18pt !important;
   font-family: sans-serif !important;
   font-weight: normal !important;
-  color: white;
+  color: black;
+}
+
+#disinfobusters-ext .disinfobusters-ext-message a {
+  color: blue;
 }
 
 #disinfobusters-ext .disinfobusters-ext-dismiss {
+  clear: both;
   cursor: pointer;
+  color: white;
+  font-size: small !important;
 }
