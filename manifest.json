@@ -30,7 +30,6 @@
     "webRequest",
     "webRequestBlocking",
     "tabs",
-    "activeTab",
     "<all_urls>"
   ]
 }
