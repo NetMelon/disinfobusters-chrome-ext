@@ -58,13 +58,16 @@ xhr.onreadystatechange = function () {
 }
 xhr.send();
 
-if (list) {
+console.log( 'list',list)
+if (Array.isArray(list) && list.length) {console.log("list is empty", list)}
+else {
   console.log("list retrieved! Establishing redirect.");
   chrome.webRequest.onBeforeRequest.addListener(
     function (details) {
       console.log("Disinfo site intercepted: " + details.url);
       return {
-        redirectUrl: "https://www.disinfobusters.eu/stop"
+        redirectUrl: chrome.extension.getURL("warning.html")
+        //"https://www.disinfobusters.eu/stop"
       };
     },
     // filters
