@@ -1,104 +1,88 @@
 'use strict';
 
-var list = [];
+const csvSource = "https://raw.githubusercontent.com/qcri/COVID19-MAL-Blacklist/master/disinfo/disinfo_latest.csv"
+const list = [];
 
 // Linking Disinfo Busters website with icon in main Google Chrome toolbar
-chrome.browserAction.onClicked.addListener(function (tab) {
+chrome.browserAction.onClicked.addListener(function(tab) {
   chrome.tabs.create({
     url: 'https://disinfobusters.weebly.com/stop.html'
   })
 })
 
-// in progrss below this comment
-
-// load csv file
-// detect opening of website on the list
-
-function processCSV(allText, hasHeaders = false) {
-  if (hasHeaders !== true){
-      var allTextLines = allText.split(/\r\n|\n/);
-      var headers = allTextLines[0].split(',');
-      var lines = [];
-    
-      for (var i = 0; i < allTextLines.length; i++) {
-        var data = allTextLines[i].split(',');
-        if (data.length == headers.length) {
-    
-          var tarr = [];
-          for (var j = 0; j < headers.length; j++) {
-            tarr.push( data[j] );
-          }
-          lines.push(tarr);
-        }
+const fetchList = () => {
+  return fetch(csvSource)
+    .then(function(response) {
+      if (response.status !== 200) {
+        console.log('Looks like there was a problem. Status Code: %s', response.status);
+        return Promise.reject(new Error("Failed to fetch API"));
       }
-  } else {
-      var allTextLines = allText.split(/\r\n|\n/);
-      var headers = allTextLines[0].split(',');
-      var lines = [];
-    
-      for (var i = 1; i < allTextLines.length; i++) {
-        var data = allTextLines[i].split(',');
-        if (data.length == headers.length) {
-    
-          var tarr = [];
-          for (var j = 0; j < headers.length; j++) {
-            tarr.push( data[j] );
-          }
-          lines.push(tarr);
-        }
+      // Examine the text in the response
+      return response.text()
+    })
+    .then((raw) => {
+      return Promise.resolve(
+        raw.split("\n")
+          .map(row => row.split(" "))
+          .map(arr => ({
+            // domain: "*://" + arr[0] + "/*",
+            domain: arr[0].toLowerCase(),
+            score: +arr[1]
+          }))
+      )
+    })
+    .catch(function(err) {
+      console.log('Fetch Error :-S', err);
+    });
+}
+
+chrome.webRequest.onBeforeRequest.addListener(async function(details) {
+
+  if (list.length === 0) {
+    const data = await fetchList()
+    list.push(...data)
+    console.log("Loaded data ", data)
+  }
+
+  if (details.url === csvSource) {
+    return
+  }
+
+  // console.log("details", details)
+
+  const url = new URL(details.url)
+  if (list.filter(el => el.domain === url.host).length > 0) {
+    console.log("Found %s!", url.host);
+    chrome.tabs.executeScript(
+      details.tabId,
+      {
+        file: 'content.js',
+        runAt: 'document_end'
       }
+    );
   }
-  return lines;
-}
 
-function getBlacklist(allText) {
-  var data = processCSV(allText);
-  return data
-  .map( function(item) {
-      return item[0].split(' ');
-    }
-  )
-  .filter( function(item) {
-      return Number(item[1]) > 0.9
-  })
-  .map( function(item) {  
-      return ("*://" + item[0] + "/*");
-  })
-}
-
-var csv_source = "https://raw.githubusercontent.com/qcri/COVID19-MAL-Blacklist/master/disinfo/disinfo_latest.csv"
-
-var xhr = new XMLHttpRequest();
-xhr.open("GET", csv_source, true);
-xhr.onreadystatechange = function () {
-  if (xhr.readyState == 4) {
-    list = getBlacklist(xhr.responseText);
-    console.log("retrieved blacklist from" + csv_source, list)
-  }
-}
-xhr.send();
-
-console.log( 'list',list)
-if (Array.isArray(list) && list.length) {console.log("list is empty", list)}
-else {
-  console.log("list retrieved! Establishing redirect.");
-  chrome.webRequest.onBeforeRequest.addListener(
-    function (details) {
-      console.log("Disinfo site intercepted: " + details.url);
-      return {
-        redirectUrl: chrome.extension.getURL("warning.html")
-        //"https://www.disinfobusters.eu/stop"
-      };
-    },
-    // filters
-    {
-      urls: list
-    },
-    // extraInfoSpec
-    ["blocking"]);
-};
+},
+  // filters
+  {
+    urls: [
+      "*://*/*"
+    ]
+  },
+  // extraInfoSpec
+  ["blocking"]
+);
 
 
+// chrome.runtime.onMessage.addListener(
+//   function(message, callback) {
+//     if (message == "runContentScript") {
+//       chrome.tabs.executeScript({
+//         file: 'content.js'
+//       });
+//     }
+//   });
+//
 
 // chrome.runtime.onInstalled.addListener(function() {
 //     // todo: get csv file https://github.com/qcri/COVID19-MAL-Blacklist/blob/master/blacklist/covid19mal_latest.csv
