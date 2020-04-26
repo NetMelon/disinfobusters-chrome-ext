@@ -14,46 +14,66 @@ chrome.browserAction.onClicked.addListener(function (tab) {
 // load csv file
 // detect opening of website on the list
 
-function processData(allText) {
-  var allTextLines = allText.split(/\r\n|\n/);
-  var headers = allTextLines[0].split(',');
-  var lines = [];
-
-  for (var i = 1; i < allTextLines.length; i++) {
-    var data = allTextLines[i].split(',');
-    if (data.length == headers.length) {
-
-      var tarr = [];
-      for (var j = 0; j < headers.length; j++) {
-        tarr.push( data[j] );
+function processCSV(allText, hasHeaders = false) {
+  if (hasHeaders !== true){
+      var allTextLines = allText.split(/\r\n|\n/);
+      var headers = allTextLines[0].split(',');
+      var lines = [];
+    
+      for (var i = 0; i < allTextLines.length; i++) {
+        var data = allTextLines[i].split(',');
+        if (data.length == headers.length) {
+    
+          var tarr = [];
+          for (var j = 0; j < headers.length; j++) {
+            tarr.push( data[j] );
+          }
+          lines.push(tarr);
+        }
       }
-      lines.push(tarr);
-    }
+  } else {
+      var allTextLines = allText.split(/\r\n|\n/);
+      var headers = allTextLines[0].split(',');
+      var lines = [];
+    
+      for (var i = 1; i < allTextLines.length; i++) {
+        var data = allTextLines[i].split(',');
+        if (data.length == headers.length) {
+    
+          var tarr = [];
+          for (var j = 0; j < headers.length; j++) {
+            tarr.push( data[j] );
+          }
+          lines.push(tarr);
+        }
+      }
   }
   return lines;
 }
 
 function getBlacklist(allText) {
-  var data = processData(allText);
+  var data = processCSV(allText);
   return data
   .map( function(item) {
       return item[0].split(' ');
     }
   )
   .filter( function(item) {
-      return Number(item[1]) > 15
+      return Number(item[1]) > 0.9
   })
   .map( function(item) {  
       return ("*://" + item[0] + "/*");
   })
 }
 
+var csv_source = "https://raw.githubusercontent.com/qcri/COVID19-MAL-Blacklist/master/disinfo/disinfo_latest.csv"
+
 var xhr = new XMLHttpRequest();
-xhr.open("GET", "https://raw.githubusercontent.com/qcri/COVID19-MAL-Blacklist/master/blacklist/covid19mal_latest.csv", true);
+xhr.open("GET", csv_source, true);
 xhr.onreadystatechange = function () {
   if (xhr.readyState == 4) {
     list = getBlacklist(xhr.responseText);
-    console.log("retrieved blacklist from https://raw.githubusercontent.com/qcri/COVID19-MAL-Blacklist/master/blacklist/covid19mal_latest.csv", list)
+    console.log("retrieved blacklist from" + csv_source, list)
   }
 }
 xhr.send();
